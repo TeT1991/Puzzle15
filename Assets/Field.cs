@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class Field : MonoBehaviour
 {
-
     private List<Chip> _chips;
     private FieldCreator _fieldCreator;
     private Vector3[,] _cellsCoordinates;
@@ -16,6 +15,5 @@ public class Field : MonoBehaviour
     {
         _fieldCreator = GetComponent<FieldCreator>();
         _fieldCreator.CreateField(ref _cellsCoordinates, ref _chips, ref _emptyCell);
-
     }
 }
