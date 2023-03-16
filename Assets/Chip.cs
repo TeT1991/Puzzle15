@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class Chip : MonoBehaviour
 {
@@ -9,18 +11,19 @@ public class Chip : MonoBehaviour
     public Vector3 Size { get; private set; }
     public int Value { get; private set; }
 
-    private void Start()
-    {
-        Size = _backGroundSprite.sprite.bounds.size;
-    }
-
     public void SetValue(int value)
     {
         Value = value;
     }
 
-    private void OnMouseDown()
+    public void TryToMove()
     {
-        Debug.Log(Value);
+
     }
+
+    private void Start()
+    {
+        Size = _backGroundSprite.sprite.bounds.size;
+    }
+
 }

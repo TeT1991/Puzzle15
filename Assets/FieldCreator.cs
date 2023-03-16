@@ -6,19 +6,20 @@ using System.Linq;
 public class FieldCreator : MonoBehaviour
 {
     [SerializeField] private Chip _chipPrefab;
+    [SerializeField] private Cell _cellPrefab;
 
-    private Vector3 _emptyCell;
+    private Cell _emptyCell;
 
     private const int _SIZE = 4;
     
-    public void CreateField(ref Vector3[,] coordinates, ref List<Chip> chips, ref Vector3 emptyCell)
+    public void CreateField(ref Cell[,] cells, ref List<Chip> chips, ref Cell emptyCell)
     {
-        coordinates = CreateCells();
-        chips = CreateChips(coordinates);
+        cells = CreateCells();
+        chips = CreateChips(cells);
         emptyCell = _emptyCell;
     }
 
-    public List<Chip> CreateChips(Vector3[,] coordinates)
+    public List<Chip> CreateChips(Cell[,] cells)
     {
         List<Chip> chips = new List<Chip>();
         List<int> chipValues = Shuffle();
@@ -31,14 +32,15 @@ public class FieldCreator : MonoBehaviour
         {
             for (int y = 0; y < _SIZE; y++)
             {
-                var chip = Instantiate(_chipPrefab, coordinates[x,y], Quaternion.identity);
+                var chip = Instantiate(_chipPrefab, cells[x,y].transform.position, Quaternion.identity);
                 chip.SetValue(chipValues[0]);
                 chips.Add(chip);    
                 chipValues.RemoveAt(0);
 
                 if (chip.Value == _SIZE * _SIZE)
                 {
-                    _emptyCell = chip.transform.position;
+                    cells[x, y].SetEmpty();
+                    _emptyCell = cells[x, y];
                     chips.Remove(chip);
                     Destroy(chip.gameObject);
                 }
@@ -47,19 +49,18 @@ public class FieldCreator : MonoBehaviour
 
         return chips;
     }
-    public Vector3[,] CreateCells()
+    public Cell[,] CreateCells()
     {
-        Vector3[,] _coordinates = new Vector3[_SIZE, _SIZE];
+        Cell[,] cells = new Cell[_SIZE, _SIZE];
 
         for (int x = 0; x < _SIZE; x++)
         {
             for (int y = 0; y < _SIZE; y++)
             {
-                _coordinates[x, y] = new Vector3(x, y, 0);
+                var cell = Instantiate(_cellPrefab, new Vector3(x, y, 0), Quaternion.identity);
             }
         }
-
-        return _coordinates;
+        return cells;
     }
 
     private bool CheckIsSovlable(List<int> list)
