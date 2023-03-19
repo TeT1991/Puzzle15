@@ -10,10 +10,13 @@ public class Chip : MonoBehaviour
 
     public Vector3 Size { get; private set; }
     public int Value { get; private set; }
+    public int X, Y;
 
-    public void SetValue(int value)
+    public void SetValue(int value, int x, int y)
     {
         Value = value;
+        X = x;
+        Y = y;
     }
 
     public void TryToMove()
@@ -24,6 +27,11 @@ public class Chip : MonoBehaviour
     private void Start()
     {
         Size = _backGroundSprite.sprite.bounds.size;
+    }
+
+    private void OnMouseDown()
+    {
+        Debug.Log($"VALUE: {Value}, X {X}, Y {Y}");
     }
 
 }

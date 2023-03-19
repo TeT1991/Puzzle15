@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using System.Linq;
 
@@ -8,21 +9,18 @@ public class FieldCreator : MonoBehaviour
     [SerializeField] private Chip _chipPrefab;
     [SerializeField] private Cell _cellPrefab;
 
-    private Cell _emptyCell;
-
     private const int _SIZE = 4;
     
-    public void CreateField(ref Cell[,] cells, ref List<Chip> chips, ref Cell emptyCell)
+    public void CreateField(ref Chip[,] chips)
     {
-        cells = CreateCells();
-        chips = CreateChips(cells);
-        emptyCell = _emptyCell;
+        chips = CreateChips();
     }
 
-    public List<Chip> CreateChips(Cell[,] cells)
+    public Chip[,] CreateChips()
     {
-        List<Chip> chips = new List<Chip>();
+        Chip[,] chips = new Chip[_SIZE, _SIZE]; 
         List<int> chipValues = Shuffle();
+
         while (!CheckIsSovlable(chipValues))
         {
             chipValues = Shuffle();
@@ -32,16 +30,14 @@ public class FieldCreator : MonoBehaviour
         {
             for (int y = 0; y < _SIZE; y++)
             {
-                var chip = Instantiate(_chipPrefab, cells[x,y].transform.position, Quaternion.identity);
-                chip.SetValue(chipValues[0]);
-                chips.Add(chip);    
+                var chip = Instantiate(_chipPrefab, new Vector3(x,y), Quaternion.identity);
+                chip.SetValue(chipValues[0],x,y);
+                chips[x,y] = chip;    
                 chipValues.RemoveAt(0);
 
                 if (chip.Value == _SIZE * _SIZE)
                 {
-                    cells[x, y].SetEmpty();
-                    _emptyCell = cells[x, y];
-                    chips.Remove(chip);
+                    chips[x, y] = null;
                     Destroy(chip.gameObject);
                 }
             }
@@ -49,19 +45,8 @@ public class FieldCreator : MonoBehaviour
 
         return chips;
     }
-    public Cell[,] CreateCells()
-    {
-        Cell[,] cells = new Cell[_SIZE, _SIZE];
 
-        for (int x = 0; x < _SIZE; x++)
-        {
-            for (int y = 0; y < _SIZE; y++)
-            {
-                var cell = Instantiate(_cellPrefab, new Vector3(x, y, 0), Quaternion.identity);
-            }
-        }
-        return cells;
-    }
+
 
     private bool CheckIsSovlable(List<int> list)
     {
