@@ -7,9 +7,9 @@ using System.Linq;
 public class FieldCreator : MonoBehaviour
 {
     [SerializeField] private Chip _chipPrefab;
-    [SerializeField] private Cell _cellPrefab;
+    [SerializeField] private List<Sprite> _sprites;
 
-    private const int _SIZE = 4;
+    private const int _SIZE = 2;
     
     public void CreateField(ref Chip[,] chips)
     {
@@ -30,23 +30,30 @@ public class FieldCreator : MonoBehaviour
         {
             for (int y = 0; y < _SIZE; y++)
             {
-                var chip = Instantiate(_chipPrefab, new Vector3(x,y), Quaternion.identity);
-                chip.SetValue(chipValues[0],x,y);
-                chips[x,y] = chip;    
+                var chip = Instantiate(_chipPrefab, new Vector3(x, y), Quaternion.identity);
+
+                chip.SetValue(chipValues[0]);
                 chipValues.RemoveAt(0);
+
+                chip.SetMatrixCoordinates(x, y);
+
+                chips[x, y] = chip;
+
 
                 if (chip.Value == _SIZE * _SIZE)
                 {
                     chips[x, y] = null;
                     Destroy(chip.gameObject);
+                    continue;
                 }
+
+                chip.SetSprite(_sprites[chip.Value - 1]);
+
             }
         }
 
         return chips;
     }
-
-
 
     private bool CheckIsSovlable(List<int> list)
     {

@@ -3,80 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using System;
 
 public class ChipSelector : MonoBehaviour
 {
-    private Field _field;
-    private Chip _chip;
+    public UnityEvent ChipSelected;
 
-    private bool _isChipSelected = false;
+    [SerializeField] private Field _field;
 
-    private KeyCode _keyPressed;
+    public Chip SelectedChip { get; private set; }
+    public bool IsSelected { get; private set; } = false; 
 
-    private int _xDirection = 0;
-    private int _yDirection = 0;
-
-    public UnityEvent MovableChipSelected;
-
-    public Chip SelectChip(Chip[,] chips)
+    public void SetSelectedChip(Chip chip)
     {
-        int xPosition = 0;
-        int yPosition = 0;
+        SelectedChip = chip;
 
-        for (int x = 0; x < chips.Length; x++)
+        if (SelectedChip != null && IsSelected == false)
         {
-            for (int y = 0; y < chips.Length; y++)
-            {
-                if (chips[x,y] == null)
-                {
-                    xPosition = x;
-                    yPosition = y;
-                }
-            }
+            IsSelected = true;  
+            ChipSelected.Invoke();
         }
-
-        if(xPosition + _xDirection >= 0 && xPosition + _xDirection < 4 && yPosition + _yDirection >= 0 && yPosition + _yDirection < 4)
-        {
-            chips[xPosition + _xDirection, yPosition + _yDirection].GetComponentInChildren<SpriteRenderer>().color = Color.red;
-            MovableChipSelected.Invoke();
-            return chips[xPosition + _xDirection, yPosition + _yDirection];
-        }
-        else
-        {
-            return null;
-        }
-
-
     }
 
-    private void Start()
+    public void SetUnselectedStatus()
     {
-        _field = GetComponent<Field>();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            _yDirection = 1;
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            _xDirection = -1;
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            _yDirection = -1;
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            _xDirection = 1;
-        }
-
-        if (_isChipSelected)
-        {
-            MovableChipSelected.Invoke();
-        }
-        
+        IsSelected = false;
     }
 }

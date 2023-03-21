@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: befcbcfe2f23c794bb3f0b4d50c901d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _backGroundSprite: {fileID: 2784624015705503783}
+  _spriteRenderer: {fileID: 2784624015705503783}
 --- !u!61 &4079175651303359954
 BoxCollider2D:
   m_ObjectHideFlags: 0

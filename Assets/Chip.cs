@@ -1,37 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
+
 
 public class Chip : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer _backGroundSprite;
+    private ChipSelector _chipSelector;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
 
-    public Vector3 Size { get; private set; }
     public int Value { get; private set; }
-    public int X, Y;
+    public bool IsMovable { get; private set; } = false;
+    public MatrixCoordinates MatrixCoordinates { get; private set; }    
 
-    public void SetValue(int value, int x, int y)
+    public void SetValue(int value)
     {
         Value = value;
-        X = x;
-        Y = y;
     }
 
-    public void TryToMove()
+    public void SetMovable()
     {
+        IsMovable = true;
+        _spriteRenderer.color = Color.green;
+    }    
+    public void SetNotMovable()
+    {
+        IsMovable = false;
+        _spriteRenderer.color = Color.white;
+    }
 
+    public void SetMatrixCoordinates(int x, int y)
+    {
+        MatrixCoordinates = new MatrixCoordinates(x, y);    
     }
 
     private void Start()
     {
-        Size = _backGroundSprite.sprite.bounds.size;
+        Debug.Log(_spriteRenderer);
+        _chipSelector = FindObjectOfType<ChipSelector>();
     }
 
     private void OnMouseDown()
     {
-        Debug.Log($"VALUE: {Value}, X {X}, Y {Y}");
+        if (IsMovable == true)
+        {
+            _chipSelector.SetSelectedChip(this);
+        }
     }
 
+    public void SetSprite(Sprite sprite)
+    {
+        _spriteRenderer.sprite = sprite;
+    }
 }
