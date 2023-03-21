@@ -1,18 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(FieldCreator))]
-[RequireComponent(typeof(ChipMover))]
 
 public class Field : MonoBehaviour
 {
     private Chip[,] _chips;
 
     private FieldCreator _fieldCreator;
-    private ChipSelector _chipSelector; 
-    private ChipMover _chipMover;   
-    private GameStatus _gameStatus;
+    [SerializeField] private ChipSelector _chipSelector;
+    [SerializeField] private ChipMover _chipMover;
+    [SerializeField] private GameStatus _gameStatus;
 
     public void StartTurn()
     {
@@ -20,10 +17,11 @@ public class Field : MonoBehaviour
 
         int xCoordinate = 0;
         int yCoordinate = 0;
+        int size = _chips.GetLength(0);
 
-        GetEmptyCellCoordinates(ref xCoordinate, ref yCoordinate);  
+        GetEmptyCellCoordinates(ref xCoordinate, ref yCoordinate);
 
-        _chipMover.StartMovement(chip, new Vector3(xCoordinate, yCoordinate, 0));
+        _chipMover.StartMovement(chip, new Vector2(xCoordinate, size - yCoordinate));
 
         SetChipsNotMovable();
         ChangeChipIndexes(xCoordinate, yCoordinate, chip);
@@ -40,14 +38,14 @@ public class Field : MonoBehaviour
     {
         _fieldCreator = GetComponent<FieldCreator>();
         _fieldCreator.CreateField(ref _chips);
-        _chipMover = GetComponent<ChipMover>();
-        _chipSelector = GetComponent<ChipSelector>();
-        _gameStatus = GetComponent<GameStatus>();
+
         SetMovableChips();
 
         _chipSelector.ChipSelected.AddListener(StartTurn);
         _chipMover.MovingStoped.AddListener(_chipSelector.SetUnselectedStatus);
         _chipMover.MovingStoped.AddListener(EndTurn);
+
+        _gameStatus.CheckGameStatus(_chips);
     }
 
     private void GetEmptyCellCoordinates(ref int x, ref int y)
@@ -71,7 +69,6 @@ public class Field : MonoBehaviour
         int yCoordinate = 0;
 
         GetEmptyCellCoordinates(ref xCoordinate, ref yCoordinate);
-
 
         if (yCoordinate + 1 < _chips.GetLength(1))
         {

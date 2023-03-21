@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,7 +14,7 @@ public class ChipMover : MonoBehaviour
 
     public UnityEvent MovingStoped;
 
-    public void StartMovement(Chip chip, Vector3 destination)
+    public void StartMovement(Chip chip, Vector2 destination)
     {
         _chip = chip;
         _destination = destination;
@@ -39,13 +37,12 @@ public class ChipMover : MonoBehaviour
     private void Move()
     {
         float t = _pathCurve.Evaluate(_currentTime / _duration);
-        _chip.transform.position = Vector3.Lerp(_chip.transform.position, _destination, t);
+        _chip.transform.position = Vector2.Lerp(_chip.transform.position, _destination, t);
         _currentTime += Time.deltaTime;
 
-        if (Vector3.Distance(_chip.transform.position, _destination) < _threshold)
+        if (Vector2.Distance(_chip.transform.position, _destination) < _threshold)
         {
             _chip.transform.position = _destination;
-
             MovingStoped.Invoke();
         }
     }
@@ -55,6 +52,5 @@ public class ChipMover : MonoBehaviour
         _chip = null;
         _isMoving = false;
         _currentTime = 0;
-        Debug.Log("STOP");
     }
 }

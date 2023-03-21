@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class Chip : MonoBehaviour
 {
     private ChipSelector _chipSelector;
@@ -35,7 +34,6 @@ public class Chip : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log(_spriteRenderer);
         _chipSelector = FindObjectOfType<ChipSelector>();
     }
 
